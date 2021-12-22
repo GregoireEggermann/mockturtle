@@ -106,7 +106,7 @@ private:
 
       if (ntk.level (g1) > ntk.level (g0) + 1 && !ntk.is_complemented (fanin [1]))
       {
-        if (ntk.level (ntk.get_node (g1_fi [0])) == ntk.level (ntk.get_node (g1_fi [1])))
+        if (ntk.is_on_critical_path (ntk.get_node (g1_fi [0])) && ntk.is_on_critical_path (ntk.get_node (g1_fi [1])))
         {
           return false ;
         }
@@ -123,7 +123,7 @@ private:
       }
       else if (ntk.level (g0) > ntk.level (g1) + 1 && !ntk.is_complemented (fanin [0]))
       {
-        if (ntk.level (ntk.get_node (g0_fi [0])) == ntk.level (ntk.get_node (g0_fi [1])))
+        if (ntk.is_on_critical_path (ntk.get_node (g0_fi [0])) && ntk.is_on_critical_path (ntk.get_node (g0_fi [1])))
         {
           return false ;
         }
