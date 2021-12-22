@@ -139,8 +139,7 @@ private:
         }
       }
     }
-    else
-      return false;
+    return false;
   }
 
   void modify_distributivity (signal a, signal b, signal c, node n)
@@ -270,6 +269,11 @@ private:
       return false ;
     }
 
+    if (!ntk.is_on_critical_path (ntk.get_node (child [0])) || ntk.is_on_critical_path (ntk.get_node (child [1])))
+    {
+      return false ;
+    }
+
     if (ntk.is_complemented (child [0]))
     {
       node g1 = ntk.get_node (child [0]) ;
@@ -283,7 +287,7 @@ private:
         std::swap (grandchild [0], grandchild [1]) ;
       }
 
-      if (ntk.is_on_critical_path (ntk.get_node (grandchild [0])) && ntk.is_on_critical_path (ntk.get_node (grandchild [1]))) //check that the critical is really critical
+      if (!ntk.is_on_critical_path (ntk.get_node (grandchild [0])) || ntk.is_on_critical_path (ntk.get_node (grandchild [1]))) //check that the critical is really critical
       {
         return false ; //do the same check also for children and children of the grandchildren
       }
@@ -296,15 +300,16 @@ private:
           ggrandchild.push_back (fi) ;
         }) ;
 
-        if (ntk.is_on_critical_path (ntk.get_node (ggrandchild [0])) && ntk.is_on_critical_path (ntk.get_node (ggrandchild [1])) )
-        {
-          return false ;
-        }
-
         if (ntk.level (ntk.get_node (ggrandchild [1])) > ntk.level (ntk.get_node (ggrandchild [0])))
         {
           std::swap (ggrandchild [0], ggrandchild [1]) ;
         }
+
+        if (!ntk.is_on_critical_path (ntk.get_node (ggrandchild [0])) || ntk.is_on_critical_path (ntk.get_node (ggrandchild [1])) )
+        {
+          return false ;
+        }
+
         signal gate3 = ntk.create_and (child [1], ggrandchild [1]) ;
         signal gate2 = ntk.create_and (ggrandchild [0], gate3) ;
         signal gate1 = ntk.create_and (!grandchild [1], child [1]);
